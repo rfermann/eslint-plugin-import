@@ -22,6 +22,15 @@ ruleTester.run('max-dependencies', rule, {
     }),
 
     test({ code: 'import {x, y, z} from "./foo"'}),
+
+    test({
+      code: 'import type { x } from \'./foo\'; import { y } from \'./bar\';',
+      parser: require.resolve('babel-eslint'),
+      options: [{
+        max: 1,
+        ignoreTypeImports: true,
+      }],
+    }),
   ],
   invalid: [
     test({
@@ -72,6 +81,18 @@ ruleTester.run('max-dependencies', rule, {
       }],
       errors: [
         'Maximum number of dependencies (1) exceeded.',
+      ],
+    }),
+
+    test({
+      code: 'import type { x } from \'./foo\'; import type { y } from \'./bar\'; import type { z } from \'./baz\'',
+      parser: require.resolve('babel-eslint'),
+      options: [{
+        max: 2,
+        ignoreTypeImports: false,
+      }],
+      errors: [
+        'Maximum number of dependencies (2) exceeded.',
       ],
     }),
   ],
