@@ -43,11 +43,7 @@ module.exports = {
 
     return {
       ImportDeclaration(node) {
-        if (node.importKind === TYPE_IMPORT) {
-          if (!ignoreTypeImports) {
-            dependencies.add(node.source.value)
-          }
-        } else {
+        if (node.importKind !== TYPE_IMPORT || !ignoreTypeImports) {
           dependencies.add(node.source.value)
         }
         lastNode = node.source
